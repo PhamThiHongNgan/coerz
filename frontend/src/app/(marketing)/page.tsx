@@ -5,7 +5,7 @@ export default function Page() {
     <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-gray-100 selection:text-black">
 
       {/* Hero Section */}
-      <main className="relative pt-8 pb-24 lg:pt-12 lg:pb-32 overflow-hidden">
+      <main className="relative pt-16 pb-24 lg:pt-24 lg:pb-32 overflow-hidden">
         <div className="absolute inset-0 bg-dot-pattern opacity-50 z-0 pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center gap-16">
@@ -33,7 +33,7 @@ export default function Page() {
 
           {/* Right side - Abstract interface representation */}
           <div className="flex-1 w-full relative">
-            <div className="relative rounded-2xl bg-white border border-gray-200 shadow-2xl p-2 z-10 mx-auto max-w-lg hover:shadow-3xl transition-all duration-500 hover:-translate-y-2">
+            <div className="relative rounded-2xl bg-white border border-gray-200 shadow-2xl p-2 z-10 mx-auto max-w-lg hover:shadow-3xl transition-shadow duration-500 animate-float">
               <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-6 h-80 flex flex-col gap-4 overflow-hidden relative">
                 
                 {/* Mockup blocks - Detailed Dashboard UI */}

@@ -13,10 +13,10 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     # ── Database ─────────────────────────────────────────────
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/coervora"
+    DATABASE_URL: str
 
     # ── Auth / JWT ───────────────────────────────────────────
-    SECRET_KEY: str = "change-me-in-production-use-a-strong-random-key"
+    SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_MINUTES: int = 60 * 24  # 24 hours
 
@@ -39,9 +39,10 @@ class Settings(BaseSettings):
     CHROMA_PORT: int = 8100
 
     model_config = {
-        "env_file": ".env",
+        "env_file": (".env", "../.env"),
         "env_file_encoding": "utf-8",
         "case_sensitive": True,
+        "extra": "ignore",
     }
 
 

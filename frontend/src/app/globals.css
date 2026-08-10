@@ -126,4 +126,17 @@
     background-image: radial-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
   }
+
+  .animate-float {
+    animation: gentle-float 4s ease-in-out infinite;
+  }
+}
+
+@keyframes gentle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
 }

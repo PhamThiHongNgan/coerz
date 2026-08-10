@@ -8,7 +8,7 @@ const navLinks = [
   { href: "/", label: "Trang chủ" },
   { href: "/solutions", label: "Giải pháp" },
   { href: "/pricing", label: "Bảng giá" },
-  { href: "/dashboard", label: "Dashboard" },
+  { href: "/history", label: "Lịch sử" },
   { href: "/about", label: "Giới thiệu" },
 ];
 
