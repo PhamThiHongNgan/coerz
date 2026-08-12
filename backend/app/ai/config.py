@@ -2,20 +2,20 @@ from pydantic_settings import BaseSettings
 from typing import Optional
 
 
-class Settings(BaseSettings):
+class AISettings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # ChromaDB
     CHROMA_HOST: str = "localhost"
     CHROMA_PORT: int = 8000
-    CHROMA_COLLECTION_PREFIX: str = "coervora"
+    CHROMA_COLLECTION_PREFIX: str = "coerz"
 
     # Ollama
     OLLAMA_BASE_URL: str = "http://localhost:11434"
     OLLAMA_MODEL: str = "llama3.1"
 
     # OpenAI-compatible
-    COERVORA_API_KEY: Optional[str] = None
+    COERZ_API_KEY: Optional[str] = None
     OPENAI_BASE_URL: str = "https://api.openai.com/v1"
     OPENAI_MODEL: str = "gpt-4o-mini"
 
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     # Crawler
     CRAWLER_MAX_PAGES: int = 50
     CRAWLER_REQUEST_TIMEOUT: int = 15
-    CRAWLER_USER_AGENT: str = "CoerVora-Bot/1.0"
+    CRAWLER_USER_AGENT: str = "CoerZ-Bot/1.0"
 
     # LLM defaults
     LLM_TEMPERATURE: float = 0.3
@@ -38,4 +38,4 @@ class Settings(BaseSettings):
     }
 
 
-settings = Settings()
+ai_settings = AISettings()

@@ -7,20 +7,19 @@ import os
 import logging
 from typing import Optional
 
-from app.crawler.document_parser import DocumentParser
-from app.vectorstore.chroma_store import ChromaStore
-from app.crawler.web_crawler import WebCrawler  # Assuming this exists based on directory
-from app.llm.provider import LLMProvider
+from app.ai.crawler.document_parser import DocumentParser
+from app.ai.vectorstore.chroma_store import ChromaStore
+from app.ai.crawler.web_crawler import WebCrawler
+from app.ai.llm.provider import LLMProvider
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
-import os
-from app.config import settings
-os.environ["OPENAI_API_KEY"] = settings.COERVORA_API_KEY or ""
+from app.ai.config import ai_settings
+os.environ["OPENAI_API_KEY"] = ai_settings.COERZ_API_KEY or ""
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Coervora AI Engine API")
+app = FastAPI(title="CoerZ AI Engine API")
 
 # Configure CORS for Next.js frontend
 app.add_middleware(
@@ -105,10 +104,10 @@ async def ingest_url(
         try:
             # Note: Assuming WebCrawler has a crawl_and_chunk method. 
             # Adjust according to your actual implementation.
-            crawler = WebCrawler()
-            pages = crawler.crawl(url, max_pages=10) # Simple example
+            crawler = WebCrawler(max_pages=10)
+            pages = crawler.crawl(url) # Simple example
             
-            from app.crawler.chunker import TextChunker
+            from app.ai.crawler.chunker import TextChunker
             chunker = TextChunker()
             chunks = chunker.chunk_pages(pages)
             

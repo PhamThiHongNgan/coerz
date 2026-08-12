@@ -5,7 +5,7 @@ from langchain_community.chat_models import ChatOllama
 from langchain_community.chat_models import ChatOpenAI
 from langchain_core.language_models import BaseChatModel
 
-from app.config import settings
+from app.ai.config import ai_settings
 
 logger = logging.getLogger(__name__)
 
@@ -34,30 +34,30 @@ class LLMProvider:
         Returns:
             A LangChain BaseChatModel instance.
         """
-        temperature = temperature if temperature is not None else settings.LLM_TEMPERATURE
-        max_tokens = max_tokens or settings.LLM_MAX_TOKENS
+        temperature = temperature if temperature is not None else ai_settings.LLM_TEMPERATURE
+        max_tokens = max_tokens or ai_settings.LLM_MAX_TOKENS
 
         if provider == "ollama":
-            model_name = model or settings.OLLAMA_MODEL
-            logger.info(f"Creating Ollama LLM: model={model_name}, base_url={settings.OLLAMA_BASE_URL}")
+            model_name = model or ai_settings.OLLAMA_MODEL
+            logger.info(f"Creating Ollama LLM: model={model_name}, base_url={ai_settings.OLLAMA_BASE_URL}")
             return ChatOllama(
-                base_url=settings.OLLAMA_BASE_URL,
+                base_url=ai_settings.OLLAMA_BASE_URL,
                 model=model_name,
                 temperature=temperature,
                 num_predict=max_tokens,
                 streaming=streaming,
             )
         elif provider == "openai":
-            model_name = model or settings.OPENAI_MODEL
-            api_key = settings.COERVORA_API_KEY or "not-set"
+            model_name = model or ai_settings.OPENAI_MODEL
+            api_key = ai_settings.COERZ_API_KEY or "not-set"
             logger.info(
                 f"Creating OpenAI-compatible LLM: model={model_name}, "
-                f"base_url={settings.OPENAI_BASE_URL}"
+                f"base_url={ai_settings.OPENAI_BASE_URL}"
             )
             return ChatOpenAI(
                 model=model_name,
                 openai_api_key=api_key,
-                openai_api_base=settings.OPENAI_BASE_URL,
+                openai_api_base=ai_settings.OPENAI_BASE_URL,
                 temperature=temperature,
                 max_tokens=max_tokens,
                 streaming=streaming,
