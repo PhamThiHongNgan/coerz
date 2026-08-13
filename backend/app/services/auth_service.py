@@ -39,7 +39,6 @@ async def register_user(
         email=email,
         password_hash=hash_password(password),
         full_name=full_name,
-        role="owner",
     )
     db.add(user)
     await db.flush()  # get user.id
