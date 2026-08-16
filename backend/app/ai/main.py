@@ -14,7 +14,7 @@ from app.ai.llm.provider import LLMProvider
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
 from app.ai.config import ai_settings
-os.environ["OPENAI_API_KEY"] = ai_settings.COERZ_API_KEY or ""
+os.environ["OPENAI_API_KEY"] = ai_settings.effective_api_key or ""
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -168,8 +168,10 @@ async def chat_endpoint(request: ChatRequest):
         if results:
             context = "\n".join([r["content"] for r in results])
             
-        # Get LLM instance configured with Mistral via OpenAI-compatible endpoint
-        llm = LLMProvider.get_llm(provider="openai")
+        # Auto-detect provider: Ollama locally, OpenAI-compatible (e.g. Groq) on cloud
+        provider = ai_settings.auto_provider
+        logger.info(f"Using LLM provider: {provider}")
+        llm = LLMProvider.get_llm(provider=provider)
         
         bot_name = request.bot_name or "doanh nghiệp"
         system_prompt = f"""Bạn là một trợ lý ảo thông minh và chuyên nghiệp, được tạo ra để tư vấn và hỗ trợ khách hàng cho {bot_name}.
@@ -199,5 +201,25 @@ HƯỚNG DẪN TRẢ LỜI:
         
         return {"response": response.content}
     except Exception as e:
-        logger.error(f"Chat error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        error_msg = str(e)
+        logger.error(f"Chat error: {error_msg}")
+        
+        if "429" in error_msg or "insufficient_quota" in error_msg:
+            try:
+                logger.info("OpenAI API limit reached. Falling back to Anthropic...")
+                fallback_llm = LLMProvider.get_llm(provider="anthropic")
+                response = fallback_llm.invoke(messages)
+                return {"response": response.content}
+            except Exception as anthropic_err:
+                logger.error(f"Anthropic fallback failed: {str(anthropic_err)}. Falling back to Ollama...")
+                try:
+                    fallback_llm = LLMProvider.get_llm(provider="ollama")
+                    response = fallback_llm.invoke(messages)
+                    return {"response": response.content}
+                except Exception as ollama_err:
+                    logger.error(f"Ollama fallback failed: {str(ollama_err)}. Falling back to Dummy LLM...")
+                    fallback_llm = LLMProvider.get_llm(provider="dummy")
+                    response = fallback_llm.invoke(messages)
+                    return {"response": response.content}
+                
+        return {"response": f"Đã xảy ra lỗi hệ thống: {error_msg[:100]}..."}
