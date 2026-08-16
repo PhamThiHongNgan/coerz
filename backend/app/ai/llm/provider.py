@@ -77,6 +77,7 @@ class LLMProvider:
                 google_api_key=api_key,
                 temperature=temperature,
                 max_output_tokens=max_tokens,
+                convert_system_message_to_human=True,
             )
         elif provider == "openai":
             model_name = model or ai_settings.OPENAI_MODEL
