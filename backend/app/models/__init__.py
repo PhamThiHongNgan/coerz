@@ -7,6 +7,7 @@ from app.models.conversation import Conversation
 from app.models.message import Message
 from app.models.lead import Lead
 from app.models.analytics import AnalyticsEvent
+from app.models.oauth_account import OAuthAccount
 
 __all__ = [
     "User",
@@ -18,4 +19,5 @@ __all__ = [
     "Message",
     "Lead",
     "AnalyticsEvent",
+    "OAuthAccount",
 ]

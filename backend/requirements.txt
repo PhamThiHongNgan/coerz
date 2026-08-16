@@ -1,3 +1,4 @@
+# Core Backend
 fastapi==0.115.0
 uvicorn[standard]==0.30.0
 sqlalchemy[asyncio]==2.0.35
@@ -10,8 +11,10 @@ passlib[bcrypt]==1.7.4
 python-multipart==0.0.9
 httpx==0.27.0
 email-validator==2.1.0
+authlib==1.3.2
+itsdangerous==2.2.0
 
-# AI Engine Dependencies
+# AI Engine (RAG, embeddings)
 chromadb==0.4.24
 langchain==0.1.13
 langchain-openai==0.1.1
