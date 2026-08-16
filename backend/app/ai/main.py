@@ -189,12 +189,19 @@ HƯỚNG DẪN TRẢ LỜI:
         ]
         
         # Add history
+        history_msgs = []
         for msg in request.history[-6:]:  # Keep last 6 messages to prevent token overflow
             if msg.get("role") == "user":
-                messages.append(HumanMessage(content=msg.get("content")))
+                history_msgs.append(HumanMessage(content=msg.get("content")))
             elif msg.get("role") == "bot":
-                messages.append(AIMessage(content=msg.get("content")))
+                history_msgs.append(AIMessage(content=msg.get("content")))
                 
+        # Gemini expects SystemMessage to be followed by a HumanMessage.
+        # If the history starts with an AIMessage (like a bot welcome message), remove it.
+        while history_msgs and isinstance(history_msgs[0], AIMessage):
+            history_msgs.pop(0)
+            
+        messages.extend(history_msgs)
         messages.append(HumanMessage(content=request.message))
         
         response = llm.invoke(messages)
