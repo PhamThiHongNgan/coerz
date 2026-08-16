@@ -5,7 +5,7 @@ from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 
-from app.config import settings
+from app.ai.config import ai_settings as settings
 
 logger = logging.getLogger(__name__)
 

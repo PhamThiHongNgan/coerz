@@ -3,7 +3,7 @@ from typing import List
 
 from langchain_core.embeddings import Embeddings
 
-from app.config import settings
+from app.ai.config import ai_settings as settings
 
 logger = logging.getLogger(__name__)
 

@@ -5,8 +5,8 @@ from typing import List, Dict, Any, Optional
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 
-from app.config import settings
-from app.embeddings.embedding_service import EmbeddingService
+from app.ai.config import ai_settings as settings
+from app.ai.embeddings.embedding_service import EmbeddingService
 
 logger = logging.getLogger(__name__)
 

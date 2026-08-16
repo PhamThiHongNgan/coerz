@@ -6,8 +6,8 @@ from urllib.robotparser import RobotFileParser
 import requests
 from bs4 import BeautifulSoup
 
-from app.config import settings
-from app.crawler.html_cleaner import HTMLCleaner
+from app.ai.config import ai_settings as settings
+from app.ai.crawler.html_cleaner import HTMLCleaner
 
 logger = logging.getLogger(__name__)
 

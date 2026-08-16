@@ -4,7 +4,7 @@ import os
 from typing import List, Dict, Any
 
 from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
-from app.crawler.chunker import TextChunker
+from app.ai.crawler.chunker import TextChunker
 
 logger = logging.getLogger(__name__)
 

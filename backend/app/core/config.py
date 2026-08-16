@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     # ── ChromaDB ─────────────────────────────────────────────
     CHROMA_HOST: str = "localhost"
     CHROMA_PORT: int = 8100
+    CHROMA_COLLECTION_PREFIX: str = "coerz"
 
     model_config = {
         "env_file": (".env", "../.env"),
