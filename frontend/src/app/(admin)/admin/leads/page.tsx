@@ -46,14 +46,32 @@ export default function AdminLeadsPage() {
     }
   }, [router]);
 
-  const [leads, setLeads] = useState<Lead[]>(MOCK_LEADS);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<"all" | LeadStatus>("all");
   const [filterSource, setFilterSource] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [sortField, setSortField] = useState<"score" | "createdAt">("createdAt");
 
-  const sources = [...new Set(MOCK_LEADS.map((l) => l.source))];
+  useEffect(() => {
+    async function loadLeads() {
+      try {
+        const res = await fetch("/api/leads");
+        if (res.ok) {
+          const data = await res.json();
+          setLeads(data);
+        }
+      } catch (error) {
+        console.error("Lỗi tải leads:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadLeads();
+  }, []);
+
+  const sources = [...new Set(leads.map((l) => l.source))];
 
   const filtered = leads
     .filter((l) => filterStatus === "all" || l.status === filterStatus)
@@ -65,11 +83,27 @@ export default function AdminLeadsPage() {
     })
     .sort((a, b) => (sortField === "score" ? b.score - a.score : b.createdAt.localeCompare(a.createdAt)));
 
-  const counts = { all: leads.length, hot: leads.filter((l) => l.status === "hot").length, warm: leads.filter((l) => l.status === "warm").length, cold: leads.filter((l) => l.status === "cold").length };
+  const counts = { 
+    all: leads.length, 
+    hot: leads.filter((l) => l.status === "hot").length, 
+    warm: leads.filter((l) => l.status === "warm").length, 
+    cold: leads.filter((l) => l.status === "cold").length 
+  };
 
-  const updateStatus = (id: string, status: LeadStatus) => {
+  const updateStatus = async (id: string, status: LeadStatus) => {
+    // Optimistic update
     setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
     if (selectedLead?.id === id) setSelectedLead({ ...selectedLead, status });
+
+    try {
+      await fetch(`/api/leads/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status })
+      });
+    } catch (error) {
+      console.error("Lỗi cập nhật trạng thái lead:", error);
+    }
   };
 
   return (
@@ -138,32 +172,45 @@ export default function AdminLeadsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {filtered.map((lead) => {
-                    const sc = statusConfig[lead.status];
-                    return (
-                      <tr key={lead.id} onClick={() => setSelectedLead(lead)} className={`cursor-pointer transition-colors ${selectedLead?.id === lead.id ? "bg-gray-50" : "hover:bg-gray-50"}`}>
-                        <td className="px-5 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-full bg-gray-100 text-black flex items-center justify-center text-sm font-bold flex-shrink-0">{lead.name.charAt(0)}</div>
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-black truncate">{lead.name}</p>
-                              <p className="text-xs text-gray-500 truncate">{lead.phone}</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-5 py-4"><span className="text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">{lead.source}</span></td>
-                        <td className="px-5 py-4 text-center"><span className={`text-sm font-bold ${lead.score >= 70 ? "text-red-600" : lead.score >= 40 ? "text-amber-600" : "text-black"}`}>{lead.score}</span></td>
-                        <td className="px-5 py-4 text-center">
-                          <span className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${sc.bg}`}>
-                            {sc.label}
-                          </span>
-                        </td>
-                        <td className="px-5 py-4"><span className="text-xs text-gray-700 font-medium">{lead.assignedTo}</span></td>
-                      </tr>
-                    );
-                  })}
-                  {filtered.length === 0 && (
-                    <tr><td colSpan={5} className="px-5 py-12 text-center text-gray-500 text-sm">Không tìm thấy Lead nào phù hợp.</td></tr>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={5} className="px-5 py-12 text-center text-gray-500 text-sm">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <div className="w-8 h-8 border-4 border-gray-200 border-t-black rounded-full animate-spin"></div>
+                          <span>Đang tải dữ liệu từ Supabase...</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {filtered.map((lead) => {
+                        const sc = statusConfig[lead.status];
+                        return (
+                          <tr key={lead.id} onClick={() => setSelectedLead(lead)} className={`cursor-pointer transition-colors ${selectedLead?.id === lead.id ? "bg-gray-50" : "hover:bg-gray-50"}`}>
+                            <td className="px-5 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="h-9 w-9 rounded-full bg-gray-100 text-black flex items-center justify-center text-sm font-bold flex-shrink-0">{lead.name.charAt(0)}</div>
+                                <div className="min-w-0">
+                                  <p className="text-sm font-semibold text-black truncate">{lead.name}</p>
+                                  <p className="text-xs text-gray-500 truncate">{lead.phone}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-5 py-4"><span className="text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md">{lead.source}</span></td>
+                            <td className="px-5 py-4 text-center"><span className={`text-sm font-bold ${lead.score >= 70 ? "text-red-600" : lead.score >= 40 ? "text-amber-600" : "text-black"}`}>{lead.score}</span></td>
+                            <td className="px-5 py-4 text-center">
+                              <span className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${sc.bg}`}>
+                                {sc.label}
+                              </span>
+                            </td>
+                            <td className="px-5 py-4"><span className="text-xs text-gray-700 font-medium">{lead.assignedTo}</span></td>
+                          </tr>
+                        );
+                      })}
+                      {filtered.length === 0 && (
+                        <tr><td colSpan={5} className="px-5 py-12 text-center text-gray-500 text-sm">Không tìm thấy Lead nào phù hợp.</td></tr>
+                      )}
+                    </>
                   )}
                 </tbody>
               </table>
