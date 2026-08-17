@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 
 export default function RegisterPage() {
   const handleGoogleSignIn = () => {
-    signIn("google", { callbackUrl: "/dashboard" });
+    signIn("google", { callbackUrl: "/" });
   };
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 font-sans selection:bg-gray-100 selection:text-black">
