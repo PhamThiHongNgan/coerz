@@ -17,8 +17,11 @@ itsdangerous==2.2.0
 # AI Engine (RAG, embeddings)
 chromadb==0.4.24
 langchain>=0.2.0
+langchain-community>=0.2.0
 langchain-openai>=0.1.16
 langchain-anthropic>=0.1.20
 langchain-google-genai>=1.0.8
 beautifulsoup4==4.12.3
 tiktoken>=0.7.0
+pypdf>=4.0.0
+docx2txt>=0.8
