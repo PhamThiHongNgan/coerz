@@ -16,7 +16,7 @@ class AISettings(BaseSettings):
 
     # Google Gemini
     GOOGLE_API_KEY: Optional[str] = None
-    GEMINI_MODEL: str = "gemini-2.0-flash"
+    GEMINI_MODEL: str = "gemini-3.7-flash"
 
     # OpenAI-compatible
     COERZ_API_KEY: Optional[str] = None
