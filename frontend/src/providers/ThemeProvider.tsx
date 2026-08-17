@@ -12,16 +12,16 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [accent, setAccent] = useState<Accent>("blue");
+  const [accent, setAccent] = useState<Accent>("purple");
 
   useEffect(() => {
-    const savedAccent = localStorage.getItem("coervora-accent") as Accent;
+    const savedAccent = localStorage.getItem("coerz-accent") as Accent;
     if (savedAccent) setAccent(savedAccent);
   }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-accent", accent);
-    localStorage.setItem("coervora-accent", accent);
+    localStorage.setItem("coerz-accent", accent);
   }, [accent]);
 
   return (
