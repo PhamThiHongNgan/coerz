@@ -48,6 +48,17 @@ class DocumentParser:
                 loader = Docx2txtLoader(file_path)
                 docs = loader.load()
                 text_content = "\n\n".join([doc.page_content for doc in docs])
+            elif extension in ["xlsx", "xls", "csv"]:
+                try:
+                    import pandas as pd
+                    if extension == "csv":
+                        df = pd.read_csv(file_path)
+                    else:
+                        df = pd.read_excel(file_path)
+                    text_content = df.to_string(index=False)
+                except Exception as csv_err:
+                    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                        text_content = f.read()
             elif extension == "txt":
                 with open(file_path, "r", encoding="utf-8") as f:
                     text_content = f.read()
