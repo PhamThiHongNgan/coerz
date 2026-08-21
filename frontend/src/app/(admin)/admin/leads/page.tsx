@@ -38,7 +38,7 @@ const statusConfig: Record<LeadStatus, { label: string; bg: string; dot: string 
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<AdminTab>("accounts" as any || "users");
+  const [activeTab, setActiveTab] = useState<AdminTab>("users");
 
   useEffect(() => {
     if (!sessionStorage.getItem("admin_auth")) {
